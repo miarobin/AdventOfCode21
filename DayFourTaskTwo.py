@@ -1,6 +1,6 @@
 readings = []
 with open('DayFourTaskFile.txt') as test:
-    numbers,*boards = test.read().split('\n\n')
+    readings = [list(line.strip('\n')) for line in test.readlines()]
 
 numbers = list(map(int,numbers.split(',')))
 boards = [[[int(spl) for spl in split.split()] for split in board.split('\n')] for board in boards]
