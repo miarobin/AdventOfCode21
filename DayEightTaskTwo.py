@@ -1,19 +1,17 @@
-def unique(comp, display):
-    return [disp for disp in display if len(disp) == comp]
+def checknum(length, check, display, d):
+    return next(disp for disp in display if len(disp) == length and check(disp, d))
 
 def config(display, output):
     display = [''.join(sorted(disp)) for disp in display.split()]
     
-    d={i:unique(j, display)[0] for i,j in [(1,2),(4,4),(7,3),(8,7)]}
+    d={i:checknum(j, lambda x, di :True, display, {}) for i,j in [(1,2),(4,4),(7,3),(8,7)]}
+    d={**d,**{i:checknum(n, f, display, d) for i, n, f in [(9, 6, lambda x, di: len(set(x) - set(di[4])) == 2),
+                                                    (3, 5, lambda x, di: len(set(x) - set(di[7])) == 2),
+                                                    (0, 6, lambda x, di: len(set(x) - set(di[7])) == 3 and not len(set(x) - set(di[4])) == 2),
+                                                    (5, 5, lambda x, di: len(set(x) - (set(di[4]) - set(di[1]))) == 3)]}}
+    d={**d,**{i:checknum(n, lambda x, di: x not in di.values(), display, d) for i, n in [(6, 6), (2, 5)]}}
 
-    d[9] = [disp for disp in display if len(disp)==6 and len(set(disp) - set(d[4])) == 2][0]
-    d[3] = [disp for disp in display if len(disp)==5 and len(set(disp) - set(d[7])) == 2][0]
-    d[0] = [disp for disp in display if len(disp)==6 and disp not in d[9] and len(set(disp) - set(d[7])) == 3][0]
-    d[5] = [disp for disp in display if len(disp)==5 and len(set(disp) - (set(d[4]) - set(d[1]))) == 3][0]
-    d[6] = [disp for disp in display if len(disp)==6 and disp not in d.values()][0]
-    d[2] = [disp for disp in display if len(disp)==5 and disp not in d.values()][0]
-
-    d_new = dict((v,k) for k,v in d.items())
+    d_new = {v:k for k,v in d.items()}
     return "".join([str(d_new["".join(sorted(out))]) for out in output.split()])
 
 with open('DayEightTaskFile.txt') as test:
